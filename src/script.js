@@ -58,7 +58,7 @@ class EventModel {
 
   async addEvent(newEvent) {
     const event = await API.postEvent(newEvent);
-    console.log(event);
+    console.log(newEvent);
     this.#events.push(event);
     return event;
   }
@@ -269,10 +269,8 @@ class EventController {
           .then((event) => {
             this.view.appendEvent(event);
           })
-          .then(() => {
-            row.parentNode.remove(row);
-          }
-          );
+        //remove the edit row 
+        row.parentNode.removeChild(row);
       }
     });
   }

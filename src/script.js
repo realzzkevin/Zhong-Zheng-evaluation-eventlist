@@ -268,7 +268,10 @@ class EventController {
           })
           .then((event) => {
             this.view.appendEvent(event);
-          });
+          })
+          .then(
+
+          );
       }
     });
   }

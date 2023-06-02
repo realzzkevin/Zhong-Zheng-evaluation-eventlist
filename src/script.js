@@ -269,8 +269,9 @@ class EventController {
           .then((event) => {
             this.view.appendEvent(event);
           })
-          .then(
-
+          .then(() => {
+            row.parentNode.remove(row);
+          }
           );
       }
     });

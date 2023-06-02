@@ -1,16 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="src/style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="src/style.css" />
     <title>Zhong Zheng Evaluation Event List</title>
-</head>
-<body>
+  </head>
+  <body>
     <main>
+      <form class="event-list" action="">
+        <div>
+          <button class="event-list__addBtn">Add New Event</button>
+        </div>
+        <table>
+          <tr class="event-list_row">
+            <th class="event-list__header">Event</th>
+            <th class="event-list__header">Start</th>
+            <th class="event-list__header">End</th>
+            <th class="event-list__header">Actions</th>
+          </tr>
 
+          <tr class="event-list_row" id="event-list_event${id}">
+            <td><p>someting</p></td>
+            <td><p>starttime</p></td>
+            <td><p>endtime</p></td>
+            <td>
+                <button class="event-list__edit">edit</button>
+                <button class="event-list__delete">del</button>
+            </td>
+          </tr>
+
+          <tr class="event">
+            <td><input type="text" name="" id=""></td>
+            <td><input type="date" name="" id=""></td>
+            <td><input type="date" name="" id=""></td>
+            <td>
+                <button class="event-list__save">save</button>
+                <button class="event-list__cancle">cancle</button>
+            </td>
+          </tr>
+        </table>
+      </form>
     </main>
     <script src="src/script.js"></script>
-</body>
+  </body>
 </html>

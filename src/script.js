@@ -58,6 +58,7 @@ class EventModel {
 
   async addEvent(newEvent) {
     const event = await API.postEvent(newEvent);
+    console.log(event);
     this.#events.push(event);
     return event;
   }
@@ -125,6 +126,10 @@ class EventView {
     const eventEl = this.createEventElem(event);
     this.eventlist.append(eventEl);
   }
+  editEvent(event) {
+    const eventEl = this.createEditRow(event);
+    this.eventlist.append(eventEl);
+  }
 
   createEventElem(event) {
     const eventElment = document.createElement("tr");
@@ -155,32 +160,36 @@ class EventView {
     button2.textContent = "delete";
     button1.classList.add("event-list__edit");
     button2.classList.add("event-list__delete");
+    button2.setAttribute("remove-id", event.id);
     buttonCol.append(button1);
     buttonCol.append(button2);
     eventElment.append(buttonCol);
     return eventElment;
   }
 
-  createEditRow() {
+  createEditRow(event) {
     const eventElment = document.createElement("tr");
     eventElment.classList.add("event-list_row");
-    eventElment.setAttribute("id", `event-${event.id}`);
+    //eventElment.setAttribute("id", `event-${event.id}`);
 
     const nameElem = document.createElement("td");
     const nameP = document.createElement("input");
     nameP.setAttribute("type", "text");
+    nameP.classList.add("eventName");
     nameElem.append(nameP);
     eventElment.append(nameElem);
 
     const start = document.createElement("td");
     const startP = document.createElement("input");
-    start.setAttribute("type", "date");
+    startP.setAttribute("type", "date");
+    startP.classList.add("startDate");
     start.append(startP);
     eventElment.append(start);
 
     const end = document.createElement("td");
-    const endP = document.createElement("p");
+    const endP = document.createElement("input");
     endP.setAttribute("type", "date");
+    endP.classList.add("endDate");
     end.append(endP);
     eventElment.append(end);
 
@@ -214,14 +223,55 @@ class EventController {
 
   setUpEvents() {
     this.setUpAddEvent();
+    this.setUpSaveEvents();
     this.setUpDeleteEvent();
     this.setUpUpdateEvent();
     this.setUpCancelEvent();
   }
 
-  setUpAddEvent() {}
+  setUpAddEvent() {
+    this.view.mainAddBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      this.view.editEvent();
+    });
+  }
 
-  setUpDeleteEvent() {}
+  setUpDeleteEvent() {
+    this.view.eventlist.addEventListener("click", (e) => {
+      const isDeleteBtn = e.target.classList.contains("event-list__delete");
+      if (isDeleteBtn) {
+        const removeId = e.target.getAttribute("remove-id");
+        console.log(removeId);
+        this.model.removeEvent(removeId).then(() => {
+          this.view.removeEvent(removeId);
+        });
+      }
+    });
+  }
+
+  setUpSaveEvents() {
+    this.view.eventlist.addEventListener("click", (e) => {
+      const isSaveBtn = e.target.classList.contains("event-list__save");
+      if (isSaveBtn) {
+        const row = e.target.parentNode.parentNode;
+        const eventName = row.querySelector(".eventName").value;
+        const startDate = row.querySelector(".startDate").value;
+        const endDate = row.querySelector(".endDate").value;
+
+        console.log(row);
+
+        this.model
+          .addEvent({
+            eventName,
+            startDate,
+            endDate,
+          })
+          .then((event) => {
+            this.view.appendEvent(event);
+          });
+      }
+    });
+  }
   setUpUpdateEvent() {}
   setUpCancelEvent() {}
 }

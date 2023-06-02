@@ -1,4 +1,4 @@
-const API = function () {
+const API = (function () {
   const API_URL = "http://localhost:3000/events";
   //get request
   const getEvents = async () => {
@@ -43,13 +43,14 @@ const API = function () {
     deleteEvent,
     putEvent,
   };
-};
+})();
 
 class EventModel {
   #events = [];
   constructor() {}
 
   getEvents() {
+    //console.log(this.#events);
     return this.#events;
   }
   async fetchEvents() {
@@ -80,7 +81,50 @@ class EventModel {
 
 class EventView {
     constructor(){
+        this.form = document.querySelector(".event-list");
+        this.mainAddBtn = document.querySelector("#mainAddBtn");
+        this.eventlist = document.querySelector(".event-list_table");
+    }
 
+    initRenderEvents(events) {
+        this.eventlist.innerHTML ="";
+        const header = this.createHeader();
+        this.eventlist.append(header);
+        events.forEach((event) => {
+            this.appendEvent(event);
+        })
+    }
+
+    createHeader(){
+        const header = document.createElement("tr");
+        header.classList.add("event-list_row");
+        const col1 = document.createElement('th');
+        col1.textContent = "Event";
+        header.appendChild(col1);
+        const col2 = document.createElement('th');
+        col2.textContent = "Start";
+        header.appendChild(col2);
+        const col3 = document.createElement('th');
+        col3.textContent = "end";
+        header.appendChild(col3);
+        const col4 = document.createElement('th');
+        col4.textContent = "Action";
+        header.appendChild(col4);
+        col1.classList.add("event-list_row")
+        col2.classList.add("event-list_row")
+        col3.classList.add("event-list_row")
+        col4.classList.add("event-list_row")
+        return header;
+    }
+
+    removeEvent(id) {
+        const elem = document.getElementById(`event-${id}`);
+        elem.remove();
+    }
+
+    appendEvent(event) {
+        const eventEl = document.createEventElem(event);
+        this.eventlist
     }
 }
 
@@ -92,7 +136,29 @@ class EventController {
     }
 
     async init() {
-        await this.model.fe
+        this.setUpEvents();
+        await this.model.fetchEvents();
+        this.view.initRenderEvents(this.model.getEvents());
+    }
+
+    setUpEvents(){
+        this.setUpAddEvent();
+        this.setUpDeleteEvent();
+        this.setUpUpdateEvent();
+        this.setUpCancelEvent();
+    }
+
+    setUpAddEvent() {
+    }
+
+    setUpDeleteEvent(){
+
+    }
+    setUpUpdateEvent(){
+
+    }
+    setUpCancelEvent(){
+
     }
 }
 

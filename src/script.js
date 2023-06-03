@@ -53,11 +53,11 @@ class EventModel {
     return this.#events;
   }
   getEventById(id) {
-    this.#events.forEach((e) => {
-      if (e.id === id) {
-        return e;
-      }
-    });
+    for (let i = 0; i < this.#events.length; i++){
+        if(this.#events[i].id === id ){
+            return this.#events[i];
+        }
+    }
   }
   async fetchEvents() {
     this.#events = await API.getEvents();
@@ -65,7 +65,6 @@ class EventModel {
 
   async addEvent(newEvent) {
     const event = await API.postEvent(newEvent);
-    console.log(newEvent);
     this.#events.push(event);
     return event;
   }
@@ -75,14 +74,17 @@ class EventModel {
     this.#events = this.#events.filter((event) => event.id !== id);
     return removeId;
   }
-
+  //update updateEvent
   async updateEvent(update, id) {
     const updateEvent = await API.putEvent(update, id);
     this.#events = this.#events.map((event) => {
       if (event.id === updateEvent.id) {
-        event = updateEvent;
+        return updateEvent;
+      } else {
+        return event;
       }
     });
+    return updateEvent;
   }
 }
 
@@ -133,10 +135,14 @@ class EventView {
     const eventEl = this.createEventElem(event);
     this.eventlist.append(eventEl);
   }
-  editEvent(event) {
-    const eventEl = this.createEditRow(event);
+
+  addNewEvent() {
+    const eventEl = this.createEditRow();
+    console.log("addNewEvent");
+    console.log(eventEl);
     this.eventlist.append(eventEl);
   }
+
 
   createEventElem(event) {
     const eventElment = document.createElement("tr");
@@ -178,27 +184,26 @@ class EventView {
   createEditRow(event) {
     const eventElment = document.createElement("tr");
     eventElment.classList.add("event-list_row");
-    //eventElment.setAttribute("id", `event-${}`);
 
     const nameElem = document.createElement("td");
-    const nameP = document.createElement("input");
-    nameP.setAttribute("type", "text");
-    nameP.classList.add("eventName");
-    nameElem.append(nameP);
+    const nameInput = document.createElement("input");
+    nameInput.setAttribute("type", "text");
+    nameInput.classList.add("eventName");
+    nameElem.append(nameInput);
     eventElment.append(nameElem);
 
     const start = document.createElement("td");
-    const startP = document.createElement("input");
-    startP.setAttribute("type", "date");
-    startP.classList.add("startDate");
-    start.append(startP);
+    const startInput = document.createElement("input");
+    startInput.setAttribute("type", "date");
+    startInput.classList.add("startDate");
+    start.append(startInput);
     eventElment.append(start);
 
     const end = document.createElement("td");
-    const endP = document.createElement("input");
-    endP.setAttribute("type", "date");
-    endP.classList.add("endDate");
-    end.append(endP);
+    const endInput = document.createElement("input");
+    endInput.setAttribute("type", "date");
+    endInput.classList.add("endDate");
+    end.append(endInput);
     eventElment.append(end);
 
     const buttonCol = document.createElement("td");
@@ -209,9 +214,19 @@ class EventView {
     button2.textContent = "cancle";
     button1.classList.add("event-list__save");
     button2.classList.add("event-list__cancle");
+
     buttonCol.append(button1);
     buttonCol.append(button2);
     eventElment.append(buttonCol);
+
+    if (event !== undefined) {
+        eventElment.setAttribute("id", `event-${event.id}`);
+        nameInput.setAttribute("value", `${event.eventName}`);
+        startInput.setAttribute("value", `${event.startDate}`);
+        endInput.setAttribute("value", `${event.endDate}`);
+        button1.setAttribute('save-id', `${event.id}`)
+        button2.setAttribute('cancel-id', `${event.id}`);
+    }
     return eventElment;
   }
 }
@@ -240,7 +255,7 @@ class EventController {
   setUpAddEvent() {
     this.view.mainAddBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      this.view.editEvent();
+      this.view.addNewEvent();
     });
   }
 
@@ -250,7 +265,6 @@ class EventController {
       const isDeleteBtn = e.target.classList.contains("event-list__delete");
       if (isDeleteBtn) {
         const removeId = e.target.getAttribute("remove-id");
-        console.log(removeId);
         this.model.removeEvent(removeId).then(() => {
           this.view.removeEvent(removeId);
         });
@@ -264,23 +278,38 @@ class EventController {
       const isSaveBtn = e.target.classList.contains("event-list__save");
       if (isSaveBtn) {
         const row = e.target.parentNode.parentNode;
+        const id = e.target.getAttribute("save-id");
+        console.log(`save-id: ${id}`)
         const eventName = row.querySelector(".eventName").value;
         const startDate = row.querySelector(".startDate").value;
         const endDate = row.querySelector(".endDate").value;
 
-        console.log(row);
-
-        this.model
-          .addEvent({
-            eventName,
-            startDate,
-            endDate,
-          })
+        if (id !== null) {
+          this.model.updateEvent(
+            {
+              eventName,
+              startDate,
+              endDate,
+              id,
+            },
+            id
+          )
           .then((event) => {
-            this.view.appendEvent(event);
+                const updatedRow = this.view.createEventElem(event);
+                row.parentNode.replaceChild(updatedRow, row);
           });
-        //remove the edit row
-        row.parentNode.removeChild(row);
+        } else {
+          this.model
+            .addEvent({
+              eventName,
+              startDate,
+              endDate,
+            })
+            .then((event) => {
+              this.view.appendEvent(event);
+              row.parentNode.removeChild(row);
+            });
+        }
       }
     });
   }
@@ -291,14 +320,20 @@ class EventController {
       if (isEditBtn) {
         const editId = e.target.getAttribute("edit-id");
         const currRow = document.getElementById(`event-${editId}`);
-        const eEvent = this.model.getEventById(editId);
+        const eEvent = this.model.getEventById(Number(editId));
         const editRow = this.view.createEditRow(eEvent);
         currRow.parentNode.replaceChild(editRow, currRow);
-        for (let i = 0; i < 10000; i++) {}
       }
     });
   }
-  setUpCancelEvent() {}
+  setUpCancelEvent() {
+    // this.view.eventlist.addEventListener("click", (e) => {
+    //   e.preventDefault();
+    //   const isCancleBtn = e.target.classList.contains("event-list__cancle");
+    //   if (isCancleBtn) {
+    //   }
+    // });
+  }
 }
 
 const model = new EventModel();

@@ -327,12 +327,22 @@ class EventController {
     });
   }
   setUpCancelEvent() {
-    // this.view.eventlist.addEventListener("click", (e) => {
-    //   e.preventDefault();
-    //   const isCancleBtn = e.target.classList.contains("event-list__cancle");
-    //   if (isCancleBtn) {
-    //   }
-    // });
+    this.view.eventlist.addEventListener("click", (e) => {
+      e.preventDefault();
+      const isCancleBtn = e.target.classList.contains("event-list__cancle");
+      if (isCancleBtn) {
+        const id = e.target.getAttribute("cancel-id");
+        const currRow = e.target.parentNode.parentNode;
+        if(id !== null){
+            // const currRow = document.getElementById(`event-${id}`);
+            const eEvent = this.model.getEventById(Number(id));
+            const eventRow = this.view.createEventElem(eEvent);
+            currRow.parentNode.replaceChild(eventRow, currRow);
+        } else {
+            currRow.parentNode.removeChild(currRow);
+        }
+      }
+    });
   }
 }
 

@@ -92,39 +92,38 @@ class EventView {
   constructor() {
     this.form = document.querySelector(".event-list");
     this.mainAddBtn = document.querySelector("#mainAddBtn");
-    this.eventlist = document.querySelector(".event-list_table");
+    this.eventlist = document.querySelector(".event-List__body");
   }
 
   initRenderEvents(events) {
     this.eventlist.innerHTML = "";
-    const header = this.createHeader();
-    this.eventlist.append(header);
+
     events.forEach((el) => {
       this.appendEvent(el);
     });
   }
 
-  createHeader() {
-    const header = document.createElement("tr");
-    header.classList.add("event-list_row");
-    const col1 = document.createElement("th");
-    col1.textContent = "Event";
-    header.appendChild(col1);
-    const col2 = document.createElement("th");
-    col2.textContent = "Start";
-    header.appendChild(col2);
-    const col3 = document.createElement("th");
-    col3.textContent = "end";
-    header.appendChild(col3);
-    const col4 = document.createElement("th");
-    col4.textContent = "Action";
-    header.appendChild(col4);
-    col1.classList.add("event-list_row");
-    col2.classList.add("event-list_row");
-    col3.classList.add("event-list_row");
-    col4.classList.add("event-list_row");
-    return header;
-  }
+//   createHeader() {
+//     const header = document.createElement("tr");
+//     header.classList.add("event-list_row");
+//     const col1 = document.createElement("th");
+//     col1.textContent = "Event";
+//     header.appendChild(col1);
+//     const col2 = document.createElement("th");
+//     col2.textContent = "Start";
+//     header.appendChild(col2);
+//     const col3 = document.createElement("th");
+//     col3.textContent = "end";
+//     header.appendChild(col3);
+//     const col4 = document.createElement("th");
+//     col4.textContent = "Action";
+//     header.appendChild(col4);
+//     col1.classList.add("event-list_row");
+//     col2.classList.add("event-list_row");
+//     col3.classList.add("event-list_row");
+//     col4.classList.add("event-list_row");
+//     return header;
+//   }
 
   removeEvent(id) {
     const elem = document.getElementById(`event-${id}`);
@@ -138,8 +137,6 @@ class EventView {
 
   addNewEvent() {
     const eventEl = this.createEditRow();
-    console.log("addNewEvent");
-    console.log(eventEl);
     this.eventlist.append(eventEl);
   }
 
@@ -279,7 +276,6 @@ class EventController {
       if (isSaveBtn) {
         const row = e.target.parentNode.parentNode;
         const id = e.target.getAttribute("save-id");
-        console.log(`save-id: ${id}`)
         const eventName = row.querySelector(".eventName").value;
         const startDate = row.querySelector(".startDate").value;
         const endDate = row.querySelector(".endDate").value;
@@ -334,7 +330,6 @@ class EventController {
         const id = e.target.getAttribute("cancel-id");
         const currRow = e.target.parentNode.parentNode;
         if(id !== null){
-            // const currRow = document.getElementById(`event-${id}`);
             const eEvent = this.model.getEventById(Number(id));
             const eventRow = this.view.createEventElem(eEvent);
             currRow.parentNode.replaceChild(eventRow, currRow);

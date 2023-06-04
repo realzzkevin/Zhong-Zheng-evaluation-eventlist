@@ -4,24 +4,25 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="src/style.css" />
+    <link rel="stylesheet" href="./src/reset.css"/>
+    <link rel="stylesheet" href="./src/style.css"/>
     <title>Zhong Zheng Evaluation Event List</title>
   </head>
   <body>
     <main>
       <div class="event-list" action="">
-        <div>
+        <div class="event-list__btn">
           <button class="event-list__addBtn" id="mainAddBtn">
             Add New Event
           </button>
         </div>
         <table class="event-list_table">
           <thead class="event-list__header">
-            <tr>
-                <th class="event-list__header">Event</th>
-                <th class="event-list__header">Start</th>
-                <th class="event-list__header">End</th>
-                <th class="event-list__header">Actions</th>
+            <tr class="event-list__row">
+                <th><p>Event</p></th>
+                <th><p>Start</p></th>
+                <th><p>End</p></th>
+                <th><p>Actions</p></th>
             </tr>
           </thead>
           <tbody class="event-List__body">
@@ -43,8 +44,8 @@
                 <td>
                     <button class="event-list__save">save</button>
                     <button class="event-list__cancle">cancle</button>
-                </td>
-              </tr> -->
+                </td> -->
+              </tr>
           </tbody>
         </table>
     </div>

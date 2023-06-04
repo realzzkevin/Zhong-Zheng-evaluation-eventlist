@@ -35,7 +35,6 @@ const API = (function () {
     return await res.json();
   };
 
-  //
 
   return {
     getEvents,
@@ -188,9 +187,9 @@ class EventView {
     const button2 = document.createElement("button");
 
     button1.textContent = "save";
-    button2.textContent = "cancle";
+    button2.textContent = "cancel";
     button1.classList.add("event-list__save");
-    button2.classList.add("event-list__cancle");
+    button2.classList.add("event-list__cancel");
 
     buttonCol.append(button1);
     buttonCol.append(button2);
@@ -305,8 +304,8 @@ class EventController {
   setUpCancelEvent() {
     this.view.eventlist.addEventListener("click", (e) => {
       //e.preventDefault();
-      const isCancleBtn = e.target.classList.contains("event-list__cancle");
-      if (isCancleBtn) {
+      const iscancelBtn = e.target.classList.contains("event-list__cancel");
+      if (iscancelBtn) {
         const id = e.target.getAttribute("cancel-id");
         const currRow = e.target.parentNode.parentNode;
         if(id !== null){

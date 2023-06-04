@@ -35,7 +35,6 @@ const API = (function () {
     return await res.json();
   };
 
-
   return {
     getEvents,
     postEvent,
@@ -52,10 +51,10 @@ class EventModel {
     return this.#events;
   }
   getEventById(id) {
-    for (let i = 0; i < this.#events.length; i++){
-        if(this.#events[i].id === id ){
-            return this.#events[i];
-        }
+    for (let i = 0; i < this.#events.length; i++) {
+      if (this.#events[i].id === id) {
+        return this.#events[i];
+      }
     }
   }
   async fetchEvents() {
@@ -116,6 +115,47 @@ class EventView {
     this.eventlist.append(eventEl);
   }
 
+  createEditBtn(id) {
+    const btn = document.createElement("button");
+    btn.innerHTML =
+      '<svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="EditIcon" aria-label="fontSize small"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"></path></svg>';
+    btn.classList.add("event-list__edit");
+    btn.setAttribute("edit-id", id);
+    return btn;
+  }
+
+  createDeleteBtn(id) {
+    const btn = document.createElement("button");
+    btn.innerHTML =
+      '<svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="DeleteIcon" aria-label="fontSize small"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"></path></svg>';
+    btn.classList.add("event-list__delete");
+    btn.setAttribute("remove-id", id);
+    return btn;
+  }
+
+  createSaveBtn() {
+    const btn = document.createElement("button");
+    btn.innerHTML =
+      '<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V173.3c0-17-6.7-33.3-18.7-45.3L352 50.7C340 38.7 323.7 32 306.7 32H64zm0 96c0-17.7 14.3-32 32-32H288c17.7 0 32 14.3 32 32v64c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V128zM224 288a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg>';
+    btn.classList.add("event-list__save");
+    // btn.setAttribute("save-id", id);
+    return btn;
+  }
+  createCancelBtn() {
+    const btn = document.createElement("button");
+    btn.innerHTML = '<svg focusable="false" aria-hidden="true" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M19.587 16.001l6.096 6.096c0.396 0.396 0.396 1.039 0 1.435l-2.151 2.151c-0.396 0.396-1.038 0.396-1.435 0l-6.097-6.096-6.097 6.096c-0.396 0.396-1.038 0.396-1.434 0l-2.152-2.151c-0.396-0.396-0.396-1.038 0-1.435l6.097-6.096-6.097-6.097c-0.396-0.396-0.396-1.039 0-1.435l2.153-2.151c0.396-0.396 1.038-0.396 1.434 0l6.096 6.097 6.097-6.097c0.396-0.396 1.038-0.396 1.435 0l2.151 2.152c0.396 0.396 0.396 1.038 0 1.435l-6.096 6.096z"></path></svg>';
+    btn.classList.add("event-list__cancel");
+    return btn;
+  }
+
+  createAddBtn(id) {
+    const btn = document.createElement("button");
+    btn.innerHTML =
+      '<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"/></svg>';
+    btn.classList.add("event-list__save");
+    btn.setAttribute("save-id", id);
+    return btn;
+  }
 
   //create a event elment
   createEventElem(event) {
@@ -140,15 +180,11 @@ class EventView {
     endP.textContent = event.endDate;
     end.append(endP);
     eventElment.append(end);
+
     const buttonCol = document.createElement("td");
-    const button1 = document.createElement("button");
-    const button2 = document.createElement("button");
-    button1.textContent = "edit";
-    button2.textContent = "delete";
-    button1.classList.add("event-list__edit");
-    button1.setAttribute("edit-id", event.id);
-    button2.classList.add("event-list__delete");
-    button2.setAttribute("remove-id", event.id);
+    const button1 = this.createEditBtn(event.id);
+    const button2 = this.createDeleteBtn(event.id);
+
     buttonCol.append(button1);
     buttonCol.append(button2);
     eventElment.append(buttonCol);
@@ -183,12 +219,16 @@ class EventView {
     eventElment.append(end);
 
     const buttonCol = document.createElement("td");
-    const button1 = document.createElement("button");
-    const button2 = document.createElement("button");
 
-    button1.textContent = "save";
-    button2.textContent = "cancel";
-    button1.classList.add("event-list__save");
+    let button1 = this.createSaveBtn();
+    if (event === undefined) {
+      button1 = this.createSaveBtn();
+    } else {
+      button1 = this.createAddBtn(event.id);
+    }
+    // const button2 = document.createElement("button");
+    const button2 = this.createCancelBtn();
+    // button2.textContent = "cancel";
     button2.classList.add("event-list__cancel");
 
     buttonCol.append(button1);
@@ -196,12 +236,11 @@ class EventView {
     eventElment.append(buttonCol);
 
     if (event !== undefined) {
-        eventElment.setAttribute("id", `event-${event.id}`);
-        nameInput.setAttribute("value", `${event.eventName}`);
-        startInput.setAttribute("value", `${event.startDate}`);
-        endInput.setAttribute("value", `${event.endDate}`);
-        button1.setAttribute('save-id', `${event.id}`)
-        button2.setAttribute('cancel-id', `${event.id}`);
+      eventElment.setAttribute("id", `event-${event.id}`);
+      nameInput.setAttribute("value", `${event.eventName}`);
+      startInput.setAttribute("value", `${event.startDate}`);
+      endInput.setAttribute("value", `${event.endDate}`);
+      button2.setAttribute("cancel-id", `${event.id}`);
     }
     return eventElment;
   }
@@ -260,19 +299,20 @@ class EventController {
         const endDate = row.querySelector(".endDate").value;
 
         if (id !== null) {
-          this.model.updateEvent(
-            {
-              eventName,
-              startDate,
-              endDate,
-              id,
-            },
-            id
-          )
-          .then((event) => {
-                const updatedRow = this.view.createEventElem(event);
-                row.parentNode.replaceChild(updatedRow, row);
-          });
+          this.model
+            .updateEvent(
+              {
+                eventName,
+                startDate,
+                endDate,
+                id,
+              },
+              id
+            )
+            .then((event) => {
+              const updatedRow = this.view.createEventElem(event);
+              row.parentNode.replaceChild(updatedRow, row);
+            });
         } else {
           this.model
             .addEvent({
@@ -308,12 +348,12 @@ class EventController {
       if (iscancelBtn) {
         const id = e.target.getAttribute("cancel-id");
         const currRow = e.target.parentNode.parentNode;
-        if(id !== null){
-            const eEvent = this.model.getEventById(Number(id));
-            const eventRow = this.view.createEventElem(eEvent);
-            currRow.parentNode.replaceChild(eventRow, currRow);
+        if (id !== null) {
+          const eEvent = this.model.getEventById(Number(id));
+          const eventRow = this.view.createEventElem(eEvent);
+          currRow.parentNode.replaceChild(eventRow, currRow);
         } else {
-            currRow.parentNode.removeChild(currRow);
+          currRow.parentNode.removeChild(currRow);
         }
       }
     });

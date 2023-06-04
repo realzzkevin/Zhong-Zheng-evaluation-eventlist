@@ -59,10 +59,6 @@ input, input:focus {
     border-radius: 5px;
 }
 
-/* input:focus {
-    outline: none;
-} */
-
 .event-list__btn {
     display: flex;
     justify-content: center;
@@ -101,4 +97,11 @@ input, input:focus {
     margin-bottom: 5px;
     padding: 2px;
     border-radius: 5px;
+}
+
+svg {
+    height: 1.5rem;
+    width: 2rem;
+    fill: var(--traffic-white);
+    pointer-events: none;
 }

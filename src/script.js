@@ -143,7 +143,8 @@ class EventView {
   }
   createCancelBtn() {
     const btn = document.createElement("button");
-    btn.innerHTML = '<svg focusable="false" aria-hidden="true" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M19.587 16.001l6.096 6.096c0.396 0.396 0.396 1.039 0 1.435l-2.151 2.151c-0.396 0.396-1.038 0.396-1.435 0l-6.097-6.096-6.097 6.096c-0.396 0.396-1.038 0.396-1.434 0l-2.152-2.151c-0.396-0.396-0.396-1.038 0-1.435l6.097-6.096-6.097-6.097c-0.396-0.396-0.396-1.039 0-1.435l2.153-2.151c0.396-0.396 1.038-0.396 1.434 0l6.096 6.097 6.097-6.097c0.396-0.396 1.038-0.396 1.435 0l2.151 2.152c0.396 0.396 0.396 1.038 0 1.435l-6.096 6.096z"></path></svg>';
+    btn.innerHTML =
+      '<svg focusable="false" aria-hidden="true" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M19.587 16.001l6.096 6.096c0.396 0.396 0.396 1.039 0 1.435l-2.151 2.151c-0.396 0.396-1.038 0.396-1.435 0l-6.097-6.096-6.097 6.096c-0.396 0.396-1.038 0.396-1.434 0l-2.152-2.151c-0.396-0.396-0.396-1.038 0-1.435l6.097-6.096-6.097-6.097c-0.396-0.396-0.396-1.039 0-1.435l2.153-2.151c0.396-0.396 1.038-0.396 1.434 0l6.096 6.097 6.097-6.097c0.396-0.396 1.038-0.396 1.435 0l2.151 2.152c0.396 0.396 0.396 1.038 0 1.435l-6.096 6.096z"></path></svg>';
     btn.classList.add("event-list__cancel");
     return btn;
   }
@@ -226,11 +227,8 @@ class EventView {
     } else {
       button1 = this.createAddBtn(event.id);
     }
-    // const button2 = document.createElement("button");
     const button2 = this.createCancelBtn();
-    // button2.textContent = "cancel";
-    button2.classList.add("event-list__cancel");
-
+    
     buttonCol.append(button1);
     buttonCol.append(button2);
     eventElment.append(buttonCol);
@@ -269,14 +267,12 @@ class EventController {
 
   setUpAddEvent() {
     this.view.mainAddBtn.addEventListener("click", (e) => {
-      //e.preventDefault();
       this.view.addNewEvent();
     });
   }
 
   setUpDeleteEvent() {
     this.view.eventlist.addEventListener("click", (e) => {
-      //e.preventDefault();
       const isDeleteBtn = e.target.classList.contains("event-list__delete");
       if (isDeleteBtn) {
         const removeId = e.target.getAttribute("remove-id");
@@ -289,7 +285,6 @@ class EventController {
 
   setUpSaveEvents() {
     this.view.eventlist.addEventListener("click", (e) => {
-      //e.preventDefault();
       const isSaveBtn = e.target.classList.contains("event-list__save");
       if (isSaveBtn) {
         const row = e.target.parentNode.parentNode;
@@ -321,16 +316,16 @@ class EventController {
               endDate,
             })
             .then((event) => {
-              this.view.appendEvent(event);
-              row.parentNode.removeChild(row);
+              const updatedRow = this.view.createEventElem(event);
+              row.parentNode.replaceChild(updatedRow, row);
             });
         }
       }
     });
   }
+
   setUpUpdateEvent() {
     this.view.eventlist.addEventListener("click", (e) => {
-      //e.preventDefault();
       const isEditBtn = e.target.classList.contains("event-list__edit");
       if (isEditBtn) {
         const editId = e.target.getAttribute("edit-id");
@@ -341,9 +336,9 @@ class EventController {
       }
     });
   }
+
   setUpCancelEvent() {
     this.view.eventlist.addEventListener("click", (e) => {
-      //e.preventDefault();
       const iscancelBtn = e.target.classList.contains("event-list__cancel");
       if (iscancelBtn) {
         const id = e.target.getAttribute("cancel-id");

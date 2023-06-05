@@ -228,7 +228,7 @@ class EventView {
       button1 = this.createAddBtn(event.id);
     }
     const button2 = this.createCancelBtn();
-    
+
     buttonCol.append(button1);
     buttonCol.append(button2);
     eventElment.append(buttonCol);
@@ -292,33 +292,38 @@ class EventController {
         const eventName = row.querySelector(".eventName").value;
         const startDate = row.querySelector(".startDate").value;
         const endDate = row.querySelector(".endDate").value;
-
-        if (id !== null) {
-          this.model
-            .updateEvent(
-              {
+        //use try ...catch to check input.
+        try {
+          this.validation(eventName, startDate, endDate);
+          if (id !== null) {
+            this.model
+              .updateEvent(
+                {
+                  eventName,
+                  startDate,
+                  endDate,
+                  id,
+                },
+                id
+              )
+              .then((event) => {
+                const updatedRow = this.view.createEventElem(event);
+                row.parentNode.replaceChild(updatedRow, row);
+              });
+          } else {
+            this.model
+              .addEvent({
                 eventName,
                 startDate,
                 endDate,
-                id,
-              },
-              id
-            )
-            .then((event) => {
-              const updatedRow = this.view.createEventElem(event);
-              row.parentNode.replaceChild(updatedRow, row);
-            });
-        } else {
-          this.model
-            .addEvent({
-              eventName,
-              startDate,
-              endDate,
-            })
-            .then((event) => {
-              const updatedRow = this.view.createEventElem(event);
-              row.parentNode.replaceChild(updatedRow, row);
-            });
+              })
+              .then((event) => {
+                const updatedRow = this.view.createEventElem(event);
+                row.parentNode.replaceChild(updatedRow, row);
+              });
+          }
+        } catch (e) {
+          alert(e);
         }
       }
     });
@@ -352,6 +357,22 @@ class EventController {
         }
       }
     });
+  }
+  //input validation
+  validation(eventName, startDate, endDate) {
+    if (eventName.length === 0) {
+      throw new Error("Please enter event name.");
+    }
+
+    if (startDate.length === 0 || endDate.length === 0) {
+      throw new Error("Please enter event date");
+    }
+    const date1 = new Date(startDate);
+    const date2 = new Date(endDate);
+
+    if (date1 > date2) {
+      throw new Error("invalid dates");
+    }
   }
 }
 
